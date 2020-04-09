@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -71,28 +73,34 @@ public class AccessServiceTest {
 		
 		//System.out.println("list" + ref_result.toString());
 		logger.info("list" + ref_result);
-		Map<String, Object> access = (Map<String, Object>) ref_result.get(0);
-		ResultSet rs = (ResultSet) ref_result.get("ref_result");
+		//Map<String, Object> access = (Map<String, Object>) ref_result.get(0);
+		//logger.info("access" + access);
 		
-		//int i = 0;
-		//AccessVO empVO = null;
-		//Iterator<AccessVO> iterator = ref_result.iterator();
 		
 		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int nColumns = rsmd.getColumnCount();
-			
-			for (int i = 0; i < nColumns; i++) {
-				System.out.print("result" + rsmd.getColumnName(i + 1) + "\t");
-			}
-			
-			while (rs.next()) {
+			if(!ref_result.isEmpty()) {
+		
+				ResultSet rs = (ResultSet) ref_result.get("ref_result");
+				logger.info("rs" + rs);
+				
+				//int i = 0;
+				//AccessVO empVO = null;
+				//Iterator<AccessVO> iterator = ref_result.iterator();
+				
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int nColumns = rsmd.getColumnCount();
+				
 				for (int i = 0; i < nColumns; i++) {
-					System.out.print("result" + rs.getString(i + 1) + "\t");
+					System.out.print("result" + rsmd.getColumnName(i + 1) + "\t");
 				}
-				System.out.println();
-			}
-			
+				
+				while (rs.next()) {
+					for (int i = 0; i < nColumns; i++) {
+						System.out.print("result" + rs.getString(i + 1) + "\t");
+					}
+					System.out.println();
+				}
+			} 
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

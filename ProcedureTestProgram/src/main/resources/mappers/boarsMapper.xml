@@ -3,8 +3,8 @@
 
 <mapper namespace="com.boardPrograms.web.board.boardsMapper">
 	<resultMap type="hashmap" id="boardMap" />
-	<!-- <resultMap id="accessMap" type="com.boardPrograms.web.board.model.AccessVO">
-		<result property="CampID" column="CAMP_ID" javaType="java.lang.String" jdbcType='VARCHAR'></result>
+	<!-- <resultMap id="accessMap" type="com.boardPrograms.web.board.model.AccessVO"> -->
+	<!-- 	<result property="CampID" column="CAMP_ID" javaType="java.lang.String" jdbcType='VARCHAR'></result>
 		<result property="sWorkSect" column="CAMP_STAT_CD"></result>
 		<result property="sCallListName" column="SCENARIO_NAME"></result>
 		<result property="sPreNext" column="CAMP_NAME" javaType="java.lang.String" jdbcType="VARCHAR"></result>
@@ -40,7 +40,7 @@
 		}
 	</select> -->
 	
-	<select id="getAccessList" statementType="CALLABLE" resultType="hashmap" parameterType="hashmap">
+	<select id="getAccessList" statementType="CALLABLE" resultType="hashmap" parameterType="hashmap" useCache="true">
 		{call "SP_ACS_CAMP_INFO"('ref_result',
 		#{CAMP_ID, javaType=String, jdbcType=VARCHAR}, 
 		#{CAMP_STAT_CD, javaType=String, jdbcType=VARCHAR}, 

@@ -52,7 +52,7 @@ public class AccessDAOImpl implements AccessDAO {
 	
 	@Override
 	public Map<String, Object> getAccessList(Map<String, Object> param) {
-		return (Map<String, Object>) sqlSession.selectList(namespace + ".getAccessList", param);
+		return (Map<String, Object>) sqlSession.selectOne(namespace + ".getAccessList", param);
 		//return sqlSession.selectList(namespace + ".getAccessList", params);
 		//return sqlSession.selectList("com.boardPrograms.web.board.boarsMapper.getAccessList", params);
 	}
