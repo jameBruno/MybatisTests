@@ -1,35 +1,23 @@
 package com.boardPrograms.web.board.service;
 
-import com.boardPrograms.web.board.dao.AccessDAO;
-import com.boardPrograms.web.board.model.AccessVO;
-import com.boardPrograms.web.board.model.Params;
-import com.sun.istack.internal.logging.Logger;
-
-import sun.util.logging.resources.logging;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.servlet.jsp.PageContext;
+import org.apache.ibatis.cursor.Cursor;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.object.SqlQuery;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.boardPrograms.web.board.dao.AccessDAO;
+import com.boardPrograms.web.board.model.AccessVO;
 
 @Component
 @Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation=Propagation.REQUIRED, rollbackFor=SQLException.class)
@@ -53,9 +41,10 @@ public class AccessServiceImpl implements AccessService {
 		this.accessDAO = accessDAO;
 		this.sqlSession = sqlSession;
 	}
-	
+
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation=Propagation.REQUIRED, rollbackFor=SQLException.class)
-	public Map<String, Object> getAccessList(Map<String, Object> param) {
+	public Cursor<Object> getAccessListCursor(Map<String, Object> param) {
+		Cursor<Object> cursor = null;
 		try {
 			sqlSession.getConnection().setAutoCommit(false);
 		} catch (SQLException e) {
@@ -63,23 +52,56 @@ public class AccessServiceImpl implements AccessService {
 		}
 		
 		try {
-			/*
-			 * param = new HashMap<String, Object>();
-			 * 
-			 * param.put("CAMP_ID", "C"); param.put("CAMP_STAT_CD", "중지");
-			 * param.put("SCENARIO_NAME", "NO"); param.put("CAMP_NAME", "테스트-통합테스트용");
-			 * param.put("CAMP_COUNT", 3069); param.put("GRP_VDN", "6001");
-			 * param.put("GRP_NAME", "가입자아웃바운드"); param.put("TR_NAME", "GH_TEST");
-			 * param.put("CALLLIST_NAME", "U00120090904CL");
-			 * 
-			 * System.out.println(param.toString());
-			 */
-			accessDAO.getAccessList(param);
+			cursor = accessDAO.getAccessListCursor(param);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return param;
+		return cursor;
+	}
+	
+	@Override
+	@Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation = Propagation.REQUIRED, rollbackFor = SQLException.class)
+	public List<Map<String, String>> executeProcPossgreSQL(String queryId, Map<String, Object> param) {
+		
+		List<Map<String, String>> params = null;
+		
+		try {
+			sqlSession.getConnection().setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			params = accessDAO.executeProcPostgreSQL(queryId, param);
+			System.out.println("param" + params);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return params;
+	}	
+	
+	
+	@Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation=Propagation.REQUIRED, rollbackFor=SQLException.class)
+	public Map<String, Object> getAccessList(Map<String, Object> param) {
+		
+		Map<String, Object> map = null;
+		
+		try {
+			sqlSession.getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			map = accessDAO.getAccessList(param);
+			System.out.println("map" + map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return map;
 		
 		//return params.getRef_result();
 		
@@ -131,7 +153,7 @@ public class AccessServiceImpl implements AccessService {
 	public void setAccessDAO(AccessDAO accessDAO) {
 		this.accessDAO = accessDAO;
 	}
-
+	
 	
 	/*
 	@Override

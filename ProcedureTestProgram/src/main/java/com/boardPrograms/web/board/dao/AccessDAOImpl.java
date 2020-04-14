@@ -1,24 +1,13 @@
 package com.boardPrograms.web.board.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
-
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.boardPrograms.web.board.model.AccessVO;
-import com.boardPrograms.web.board.model.Params;
 
 @Repository("accessDAOImpl")
 public class AccessDAOImpl implements AccessDAO {
@@ -28,7 +17,7 @@ public class AccessDAOImpl implements AccessDAO {
 	SqlSession sqlSession;
 	
 	private static final String namespace = "com.boardPrograms.web.board.boardsMapper";
-	
+		
 	public AccessDAOImpl(SqlSession sqlSession) {
 		this.sqlSession = sqlSession;
 	}
@@ -51,8 +40,21 @@ public class AccessDAOImpl implements AccessDAO {
 	}
 	
 	@Override
+	public List<Map<String, Object>> executeProcPostgreSQL(String queryId, Map<String, Object> param) {
+		//queryId = "com.boardPrograms.web.board.boardsMapper";
+		return sqlSession.selectList("com.boardPrograms.web.board.boardsMapper.getAccessList", param);
+	}
+	
+	@Override
 	public Map<String, Object> getAccessList(Map<String, Object> param) {
-		return (Map<String, Object>) sqlSession.selectOne(namespace + ".getAccessList", param);
+		return sqlSession.selectOne(namespace + ".getAccessList", param);
+		//return sqlSession.selectList(namespace + ".getAccessList", params);
+		//return sqlSession.selectList("com.boardPrograms.web.board.boarsMapper.getAccessList", params);
+	}
+	
+	@Override
+	public Cursor<Object> getAccessListCursor(Map<String, Object> param) {
+		return sqlSession.selectCursor(namespace + ".getAccessList", param);
 		//return sqlSession.selectList(namespace + ".getAccessList", params);
 		//return sqlSession.selectList("com.boardPrograms.web.board.boarsMapper.getAccessList", params);
 	}

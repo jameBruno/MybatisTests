@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
-
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,10 @@ public interface AccessDAO {
 	//public List<AccessVO> getAccessList(Params params);
 	
 	public Map<String, Object> getAccessList(Map<String, Object> param);
+	
+	public List<Map<String, Object>> executeProcPostgreSQL(String queryId, Map<String, Object> param);
+	
+	Cursor<Object> getAccessListCursor(Map<String, Object> param);
 	
 	//public void getAccessList(Map<String, Object> param);
 }

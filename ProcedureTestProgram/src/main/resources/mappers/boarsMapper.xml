@@ -40,13 +40,13 @@
 		}
 	</select> -->
 	
-	<select id="getAccessList" statementType="CALLABLE" resultType="hashmap" parameterType="hashmap" useCache="true">
-		{call "SP_ACS_CAMP_INFO"('ref_result',
-		#{CAMP_ID, javaType=String, jdbcType=VARCHAR}, 
-		#{CAMP_STAT_CD, javaType=String, jdbcType=VARCHAR}, 
-		#{SCENARIO_NAME, javaType=String, jdbcType=VARCHAR}, 
-		#{CAMP_NAME}, ${CAMP_COUNT}, #{GRP_VDN}, #{GRP_NAME}, #{TR_NAME},
-		#{CALLLIST_NAME})
+	<select id="getAccessList" statementType="CALLABLE" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+		{call "SP_ACS_CAMP_INFO"('result',
+		#{CAMP_ID, mode=IN, javaType=String, jdbcType=VARCHAR}, 
+		#{CAMP_STAT_CD, mode=IN, javaType=String, jdbcType=VARCHAR}, 
+		#{SCENARIO_NAME, mode=IN, javaType=String, jdbcType=VARCHAR}, 
+		#{CAMP_NAME, mode=IN}, ${CAMP_COUNT}, #{GRP_VDN, mode=IN}, #{GRP_NAME, mode=IN}, #{TR_NAME, mode=IN},
+		#{CALLLIST_NAME, mode=IN})
 		}
 	</select>
 		

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.cursor.Cursor;
 import org.springframework.stereotype.Repository;
 
 import com.boardPrograms.web.board.model.AccessVO;
@@ -17,6 +18,10 @@ public interface AccessService {
 	//List<AccessVO> getAccessList(final Params params);
 	
 	public Map<String, Object> getAccessList(Map<String, Object> param);
+	
+	public List<Map<String, Object>> executeProcPossgreSQL(String queryId, Map<String, Object> param);
+	
+	public Cursor<Object> getAccessListCursor(Map<String, Object> param);
 	
 	//List<AccessVO> getAccessList(final Params params);
 	
